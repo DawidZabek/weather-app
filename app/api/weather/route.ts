@@ -22,7 +22,6 @@ export async function GET(request: Request) {
   }
 
   try {
-    // 1) Geocoding: city -> coordinates
     const geoUrl =
       `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
         city
@@ -43,7 +42,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "City not found" }, { status: 404 });
     }
 
-    // 2) Current weather (no API key required)
     const weatherUrl =
       `https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}` +
       `&longitude=${place.longitude}` +

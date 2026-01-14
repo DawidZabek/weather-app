@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Weather App (Server-side) — Next.js + Tailwind + MongoDB
 
-## Getting Started
+A simple server-side weather application built with **Next.js (App Router)** and **Tailwind CSS**, with a **MongoDB** database for storing user data (favorites, later also search history).  
+The project is designed to meet the **Variant II (server application)** grading requirements.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project description
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application allows users to search for a city, view current weather and forecasts, and save favorite locations.  
+The server exposes a REST API and persists user data in MongoDB.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Target users (at least 2)
 
-## Learn More
+- People planning trips/commutes who need quick weather checks.
+- Outdoor/sports enthusiasts (running, cycling) who rely on forecasts.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## User benefits (at least 2)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Faster access to frequently checked locations via favorites.
+- A cleaner and consistent interface for weather data (server-side API as a single source).
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Functional requirements (at least 4)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Search for a city and fetch its current weather.
+2. Display a multi-day forecast for the selected city.
+3. Manage favorite cities (add/remove/list) stored in MongoDB.
+4. Store and display search history (planned feature, stored in MongoDB).
+
+---
+
+## Non-functional requirements (at least 2)
+
+1. Responsive UI for at least two breakpoints (mobile/desktop) on key screens.
+2. Error handling and clear messages (validation errors, external API errors, empty results).
+
+---
+
+## Tech stack (at least 2)
+
+- Next.js (React) + TypeScript
+- Tailwind CSS
+- MongoDB (via Mongoose)
+
+---
+
+## Architecture overview
+
+### Frontend
+- Next.js App Router pages
+- Tailwind CSS for styling
+
+### Backend (server-side)
+- Next.js Route Handlers under `app/api/*`
+- REST endpoints returning proper HTTP status codes and JSON
+
+### Database
+- MongoDB used for persistence
+- Collections (current):
+  - `favorites`
+
+---
+
+## REST API
+
+### Favorites
+
+#### `GET /api/favorites`
+Returns the list of favorite cities.
+
+- **200 OK** — returns an array of favorites
+
+#### `POST /api/favorites`
+Creates a new favorite city.
+
+Request body:
+```json
+{
+  "city": "Warsaw",
+  "lat": 52.2297,
+  "lon": 21.0122
+}

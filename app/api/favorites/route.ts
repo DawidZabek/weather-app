@@ -1,43 +1,59 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import { Favorite } from "@/models/Favorite";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+import { connectToDatabase } from "@/lib/mongodb";
+import { FavoriteCity } from "@/models/FavoriteCity";
 
-export async function GET() {
-  await connectDB();
-  const favorites = await Favorite.find().sort({ createdAt: -1 });
-  return NextResponse.json(favorites, { status: 200 });
+function normalizeCity(input: string) {
+  return input.trim().toLowerCase();
 }
 
-export async function POST(request: Request) {
-  const body = await request.json().catch(() => null);
+export async function GET() {
+  const session = await getServerSession(authOptions);
+  const userId = (session as any)?.userId;
 
-  if (!body || !body.city || body.lat === undefined || body.lon === undefined) {
-    return NextResponse.json(
-      { message: "Wrong data. Expected: city, lat, lon" },
-      { status: 400 }
-    );
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await connectDB();
+  await connectToDatabase();
 
-  const exists = await Favorite.findOne({
-    city: body.city,
-    lat: body.lat,
-    lon: body.lon,
+  const favorites = await FavoriteCity.find({ userId: String(userId) })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return NextResponse.json({
+    favorites: favorites.map((f: any) => ({
+      city: f.cityDisplay ?? f.city,
+      cityKey: f.city,
+      createdAt: f.createdAt,
+    })),
   });
+}
 
-  if (exists) {
-    return NextResponse.json(
-      { message: "City i" },
-      { status: 409 }
-    );
+export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+  const userId = (session as any)?.userId;
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const favorite = await Favorite.create({
-    city: body.city,
-    lat: body.lat,
-    lon: body.lon,
-  });
+  const body = await req.json().catch(() => null);
+  const cityDisplay = String(body?.city ?? "").trim();
+  const cityKey = normalizeCity(cityDisplay);
 
-  return NextResponse.json(favorite, { status: 201 });
+  if (!cityKey) {
+    return NextResponse.json({ error: "City is required" }, { status: 400 });
+  }
+
+  await connectToDatabase();
+
+  await FavoriteCity.updateOne(
+    { userId: String(userId), city: cityKey },
+    { $setOnInsert: { userId: String(userId), city: cityKey, cityDisplay } },
+    { upsert: true }
+  );
+
+  return NextResponse.json({ ok: true });
 }

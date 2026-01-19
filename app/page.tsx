@@ -19,8 +19,8 @@ type WeatherResponse = {
 };
 
 type FavoriteItem = {
-  city: string; // display
-  cityKey: string; // normalized key used for delete + comparisons
+  city: string;
+  cityKey: string;
   createdAt?: string;
 };
 
@@ -38,7 +38,7 @@ function normalizeCityKey(value: string) {
 }
 
 export default function HomePage() {
-  const [city, setCity] = useState("Warsaw");
+  const [city, setCity] = useState("");
   const [data, setData] = useState<WeatherResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +76,6 @@ export default function HomePage() {
         return;
       }
 
-      // Expect API to return: { city, cityKey }
       const items = Array.isArray(body?.favorites) ? body.favorites : [];
       setFavorites(
         items.map((f: any) => ({
@@ -99,7 +98,6 @@ export default function HomePage() {
       setFavorites([]);
       setFavoritesError(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   async function handleSearch(e: React.FormEvent) {
@@ -126,6 +124,34 @@ export default function HomePage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function searchCity(nextCity: string) {
+  const normalized = nextCity.trim();
+  if (!normalized) return;
+
+  setCity(normalized);
+  setError(null);
+  setIsLoading(true);
+
+  try {
+  const res = await fetch(`/api/weather?city=${encodeURIComponent(normalized)}`);
+  const body = await res.json().catch(() => null);
+
+  if (!res.ok) {
+  const message = body?.error ?? `Request failed with status ${res.status}.`;
+  setData(null);
+  setError(message);
+  return;
+  }
+
+  setData(body);
+  } catch {
+  setData(null);
+  setError("Network error. Please try again.");
+  } finally {
+  setIsLoading(false);
+  }
   }
 
   async function addCurrentCityToFavorites() {
@@ -176,7 +202,6 @@ export default function HomePage() {
         return;
       }
 
-      // Remove by cityKey (normalized), not display name
       setFavorites((prev) => prev.filter((f) => f.cityKey !== cityKeyToRemove));
     } catch {
       setFavoritesError("Network error while removing favorite");
@@ -188,7 +213,6 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-8 px-4 py-10">
-      {/* AUTH BAR */}
       <div className="flex items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/40 px-4 py-3">
         <div>
           <p className="text-xs text-zinc-400">Mode</p>
@@ -297,14 +321,13 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* FAVORITES */}
       <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4 sm:p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-zinc-100">Favorites</h2>
             <p className="text-sm text-zinc-300">
               {isLoggedIn
-                ? "Your saved cities (stored in MongoDB)."
+                ? "Your saved cities"
                 : "Login to use favorites."}
             </p>
           </div>
@@ -338,7 +361,7 @@ export default function HomePage() {
             >
               <button
                 className="text-sm font-semibold text-zinc-100 hover:underline"
-                onClick={() => setCity(fav.city)}
+                onClick={() => searchCity(fav.city)}
                 type="button"
                 title="Click to load city"
               >
@@ -409,7 +432,7 @@ export default function HomePage() {
       </section>
 
       <footer className="mt-auto text-xs text-zinc-500">
-        Tip: try an invalid city name to see REST errors (400/404).
+        Weather app by Dawid Ząbek.
       </footer>
     </main>
   );

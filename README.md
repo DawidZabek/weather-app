@@ -1,172 +1,130 @@
-# Weather App (Server-side) — Next.js + Tailwind + MongoDB
+\section{Weather App -- Server-Side Web Application}
 
-A server-side weather application built with **Next.js (App Router)** and **Tailwind CSS**, using **MongoDB** for data persistence.  
-The project is designed to meet the **Variant II (server application)** grading requirements.
+\subsection{Project Description}
+Weather App is a fullstack \textbf{server-side web application} that allows users to check current weather conditions, weekly forecasts, and visualize precipitation data on an interactive world map.  
+The application exposes its own \textbf{REST API}, integrates with external weather services, and stores user data in a \textbf{MongoDB} database.
 
----
+The project was developed as part of the \textit{JavaScript Programming Languages} course and fulfills the requirements of \textbf{Variant II -- Server-Side Application}.
 
-## Project description
+\subsection{Target Users}
+\begin{itemize}
+  \item Individual users who want to check weather conditions, save favorite cities, and explore weather data on a map.
+  \item Academic audience -- demonstration of a correct server-side architecture using JavaScript, REST API, database integration, and automated testing.
+\end{itemize}
 
-The application allows users to search for cities, display weather information, and manage a list of favorite locations.  
-All business logic and data access are handled on the server side via REST API endpoints.
+\subsection{User Benefits}
+\begin{itemize}
+  \item Fast access to current weather data and forecasts
+  \item Ability to save favorite cities after logging in
+  \item Interactive world map with precipitation radar
+  \item Secure authentication and persistent user data
+\end{itemize}
 
----
+\subsection{Technology Stack}
+\begin{itemize}
+  \item Next.js 16 (App Router) -- server-side framework
+  \item React with TypeScript -- frontend UI
+  \item MongoDB with Mongoose -- NoSQL database
+  \item NextAuth.js -- authentication and session handling
+  \item Open-Meteo API -- weather data provider
+  \item RainViewer API -- precipitation radar tiles
+  \item Leaflet and React-Leaflet -- interactive maps
+  \item Tailwind CSS -- UI styling
+  \item Vitest and Testing Library -- automated tests
+  \item GitHub Actions -- CI pipeline
+\end{itemize}
 
-## Target users
+\subsection{Functional Requirements}
+\begin{enumerate}
+  \item City weather search -- users can search for a city and receive current weather data.
+  \item User registration and login -- users can create an account and authenticate using email and password.
+  \item Favorite cities management -- logged-in users can add and remove favorite cities stored in MongoDB.
+  \item World weather map -- users can navigate to a map view displaying precipitation radar and click any point to fetch weather data.
+  \item Seven-day weather forecast -- users can view a weekly weather forecast for a selected city.
+\end{enumerate}
 
-- Users who want to quickly check weather conditions for selected cities.
-- People planning trips or outdoor activities who need reliable weather information.
+\subsection{Non-Functional Requirements}
+\subsubsection{Security}
+\begin{itemize}
+  \item Passwords are hashed using the \texttt{bcrypt} algorithm.
+  \item Authentication is handled via NextAuth using JWT-based sessions.
+\end{itemize}
 
----
+\subsubsection{Reliability and Error Handling}
+\begin{itemize}
+  \item REST API returns proper HTTP status codes (200, 400, 401, 404, 500, 502).
+  \item Network and upstream API errors are handled gracefully.
+\end{itemize}
 
-## User benefits
+\subsubsection{Usability}
+\begin{itemize}
+  \item Responsive user interface created with Tailwind CSS.
+  \item Clear loading indicators and error messages.
+\end{itemize}
 
-- Ability to save frequently checked cities as favorites.
-- Centralized server-side API providing consistent weather data.
+\subsection{Application Architecture}
+The application follows a \textbf{server-side architecture}.
 
----
+\begin{itemize}
+  \item Frontend (Client Components) -- responsible for user interaction, forms, and map rendering.
+  \item Backend (API Routes -- Server Components) -- responsible for business logic, database access, and communication with external APIs.
+\end{itemize}
 
-## Functional requirements
+The frontend never communicates directly with third-party APIs.  
+All external API calls are performed exclusively on the server via internal REST endpoints.
 
-1. Fetch weather data for a selected city.
-2. Display weather information returned by the server.
-3. Add cities to a list of favorites stored in the database.
-4. Retrieve the list of favorite cities from the database.
+\subsection{API Endpoints}
 
----
+\subsubsection{Weather}
+\begin{itemize}
+  \item \texttt{GET /api/weather?city=CityName} -- returns current weather data for a given city.
+\end{itemize}
 
-## Non-functional requirements
+\subsubsection{Map}
+\begin{itemize}
+  \item \texttt{GET /api/map/weather?lat=\dots\&lon=\dots} -- returns weather data for a selected map point.
+  \item \texttt{GET /api/map/radar} -- returns precipitation radar tile information.
+\end{itemize}
 
-1. The application should be responsive on desktop and mobile devices.
-2. The API should return meaningful HTTP status codes and error messages.
+\subsubsection{Authentication}
+\begin{itemize}
+  \item \texttt{POST /api/auth/register} -- registers a new user.
+  \item \texttt{POST /api/auth/[...nextauth]} -- handles login and session management.
+\end{itemize}
 
----
+\subsubsection{Favorites}
+\begin{itemize}
+  \item \texttt{GET /api/favorites} -- returns the user’s favorite cities.
+  \item \texttt{POST /api/favorites} -- adds a city to favorites.
+  \item \texttt{DELETE /api/favorites/\{cityKey\}} -- removes a city from favorites.
+\end{itemize}
 
-## Tech stack
+\subsection{Database}
+The application uses \textbf{MongoDB} with the following collections:
+\begin{itemize}
+  \item \texttt{users} -- registered users
+  \item \texttt{favorites} -- user favorite cities
+\end{itemize}
 
-- Next.js (React, App Router)
-- TypeScript
-- Tailwind CSS
-- MongoDB (with Mongoose)
+Mongoose is used as the Object Data Modeling (ODM) layer.
 
----
+\subsection{Testing}
+Automated tests were implemented using \textbf{Vitest} and \textbf{Testing Library}.  
+Test coverage includes API routes and frontend components.
 
-## Architecture
+Tests can be executed locally or automatically via the CI pipeline.
 
-### Frontend
-- Next.js App Router pages
-- Tailwind CSS for styling
+\subsection{CI/CD}
+The project includes a \textbf{GitHub Actions} workflow that:
+\begin{itemize}
+  \item installs dependencies,
+  \item runs automated tests,
+  \item fails the build if any test does not pass.
+\end{itemize}
 
-### Backend
-- REST API implemented using Next.js Route Handlers (`app/api/*`)
-- Server-side request and response handling
+\subsection{Conclusion}
+The Weather App project fulfills all requirements of a server-side web application.  
+It demonstrates proper separation of concerns, secure authentication, integration with external APIs, database usage, and automated testing.
 
-### Database
-- MongoDB used for data persistence
-- Collection: `favorites`
-
----
-
-## REST API documentation
-
-### Favorites
-
-#### GET `/api/favorites`
-Returns a list of all favorite cities.
-
-**Response codes:**
-- `200 OK` – list returned successfully
-
----
-
-#### POST `/api/favorites`
-Adds a new city to favorites.
-
-**Request body:**
-```json
-{
-  "city": "Warsaw",
-  "lat": 52.2297,
-  "lon": 21.0122
-}
-```
-
-**Response codes:**
-- `201 Created` – favorite added successfully
-- `400 Bad Request` – invalid request data
-- `409 Conflict` – city already exists in favorites
-
----
-
-## Database schema
-
-### favorites
-Fields:
-- `city` – string (required)
-- `lat` – number (required)
-- `lon` – number (required)
-- `createdAt` – date
-- `updatedAt` – date
-
----
-
-## Getting started (local development)
-
-### Prerequisites
-- Node.js and npm
-- Local MongoDB instance (MongoDB Compass recommended)
-
----
-
-### Installation
-
-```bash
-npm install
-```
-
----
-
-### Environment configuration
-
-Create a `.env.local` file in the project root:
-
-```env
-MONGODB_URI=mongodb://localhost:27017/weather-app
-```
-
-Example file:
-- `.env.example`
-
----
-
-### Running the application
-
-```bash
-npm run dev
-```
-
-Application URL:
-- http://localhost:3000
-
-API example:
-- http://localhost:3000/api/favorites
-
----
-
-## Notes for grading (Variant II)
-
-This project includes:
-- Server-side application architecture
-- REST API with documented endpoints
-- Database integration with read and write operations
-- Clear project specification
-- Consistent coding standards (TypeScript, English naming)
-
----
-
-## Planned extensions
-
-- External weather API integration (`/api/weather`)
-- Delete favorites endpoint (`DELETE /api/favorites/:id`)
-- Search history stored in MongoDB
-- Basic automated tests
+\subsection{Author}
+Dawid Ząbek

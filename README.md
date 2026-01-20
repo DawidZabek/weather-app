@@ -10,7 +10,6 @@ The project was developed as part of the **JavaScript Programming Languages** co
 
 ## Target Users
 - **Individual users** who want to check weather conditions, save favorite cities, and explore weather data on a map.
-- **Academic audience** – demonstration of a correct server-side architecture using JavaScript, REST API, database integration, and automated testing.
 
 ---
 

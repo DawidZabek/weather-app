@@ -222,36 +222,37 @@ export default function HomePage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {!isLoggedIn ? (
-            <>
-              <Link
-                href="/map"
-                className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
-              >
-                🌍 Weather Map
-              </Link>
-              <Link
-                href="/login"
-                className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="rounded-xl bg-zinc-50 px-4 py-2 text-sm font-semibold text-zinc-950"
-              >
-                Register
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
-            >
-              Logout
-            </button>
-          )}
-        </div>
+      <Link
+        href="/map"
+        className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
+      >
+        🌍 Weather Map
+      </Link>
+
+      {!isLoggedIn ? (
+        <>
+          <Link
+            href="/login"
+            className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
+          >
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-xl bg-zinc-50 px-4 py-2 text-sm font-semibold text-zinc-950"
+          >
+            Register
+          </Link>
+        </>
+      ) : (
+        <button
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
+        >
+          Logout
+        </button>
+      )}
+    </div>
       </div>
 
       {/* HEADER */}
@@ -269,7 +270,6 @@ export default function HomePage() {
         <p className="text-sm text-zinc-300 sm:text-base">{subtitle}</p>
       </header>
 
-      {/* SEARCH */}
       <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4 shadow-sm sm:p-6">
         <form
           onSubmit={handleSearch}
@@ -386,7 +386,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* STATS + DETAILS */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Temperature"

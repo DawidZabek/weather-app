@@ -4,7 +4,6 @@
 **Weather App** is a fullstack **server-side web application** that allows users to check current weather conditions, weekly forecasts, and visualize precipitation data on an interactive world map.  
 The application exposes its own **REST API**, integrates with external weather services, and stores user data in a **MongoDB** database.
 
-The project was developed as part of the **JavaScript Programming Languages** course and fulfills the requirements of **Variant II – Server-Side Application**.
 
 ---
 

@@ -12,8 +12,8 @@ import {
 } from "react-leaflet";
 
 type RadarInfo = {
-  tileUrlTemplate: string; // e.g. https://tilecache.rainviewer.com/v2/radar/.../256/{z}/{x}/{y}/2/1_0.png
-  generated: number; // unix timestamp
+  tileUrlTemplate: string;
+  generated: number;
   maxZoom: number;
 };
 
@@ -115,7 +115,6 @@ export default function MapClient() {
 
   useEffect(() => {
     fetchWeather(picked.lat, picked.lon);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [picked.lat, picked.lon]);
 
   return (
@@ -174,7 +173,6 @@ export default function MapClient() {
           </MapContainer>
         </div>
 
-        {/* SIDEBAR */}
         <aside className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4">
           <div className="flex items-start justify-between gap-3">
             <div>

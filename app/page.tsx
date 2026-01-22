@@ -226,13 +226,13 @@ export default function HomePage() {
         href="/map"
         className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
       >
-        🌍 Weather Map
+        Weather Map
       </Link>
       <Link
       href={`/forecast?city=${encodeURIComponent(city.trim())}`}
       className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold"
     >
-      📅 7-day Forecast
+      7-day Forecast
     </Link>
 
       {!isLoggedIn ? (
